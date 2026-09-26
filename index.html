@@ -92,7 +92,8 @@ section{padding:72px 0}
 .term-note{text-align:center;color:var(--faint);font-size:13px;margin-top:18px}
 
 /* ───── mechanism cards ───── */
-.mech{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.mech{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:1020px){.mech{grid-template-columns:1fr 1fr}}
 @media(max-width:860px){.mech{grid-template-columns:1fr}}
 .mcard{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:30px 28px;transition:.25s}
 .mcard:hover{border-color:rgba(68,147,248,.45);transform:translateY(-2px)}
@@ -262,11 +263,11 @@ xhr.<span class="f">send</span>(<span class="n">JSON</span>.<span class="f">stri
 <!-- ═══════════ 机制 ═══════════ -->
 <section id="mechanism">
   <div class="wrap">
-    <div class="sec-head rv">
-      <div class="kicker">The mechanism</div>
-      <h2>两道独立防线，协同运作</h2>
-      <p>一层管「看不见」，一层管「改不动」——共同让分析与反制变得不切实际。</p>
-    </div>
+      <div class="sec-head rv">
+        <div class="kicker">The mechanism</div>
+        <h2>三道独立防线，协同运作</h2>
+        <p>一层管「看不见」，一层管「改不动」，一层管「反咬回来」——共同让分析与反制变得不切实际。</p>
+      </div>
     <div class="mech rv">
       <div class="mcard">
         <div class="ic">
@@ -296,6 +297,20 @@ xhr.<span class="f">send</span>(<span class="n">JSON</span>.<span class="f">stri
           <li>双通道失败必回滚：云数据与本地镜像绝不静默分叉</li>
         </ul>
       </div>
+      <div class="mcard">
+        <div class="ic">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>主动反制 · Counter-Strike</h3>
+        <p>对已知的检测/拦截型扩展，反制到它以为自己还在正常工作。</p>
+        <ul>
+          <li>CSense 拦截器反制：检测上报本地合成假 200，数据不出网</li>
+          <li>跳转三层拦截：Navigation API + location 方法 + window.open 桩</li>
+          <li>遮罩即时清除：div.csense-window 一插入 DOM 立即移除</li>
+          <li>作品照常可玩：检测面压成全负，探测不到就无从上报</li>
+          <li>窄口径黑名单：只动 CSense 专属端点，站点与其它扩展零影响</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -320,6 +335,7 @@ xhr.<span class="f">send</span>(<span class="n">JSON</span>.<span class="f">stri
           <tr><td class="feat">配置包</td><td><span class="x">✕</span>手改 localStorage</td><td><span class="v">✓</span>JSON 主配置（重命名 / 锁定 / value:"*"）</td></tr>
           <tr><td class="feat">插件系统</td><td><span class="x">✕</span>无</td><td><span class="v">✓</span>异步加载 / 刷新钩子 / 独立防火墙插件</td></tr>
           <tr><td class="feat">被拦请求通知</td><td><span class="x">✕</span>回调悬挂，axios 卡死</td><td><span class="v">✓</span>readystatechange/error/loadend 全量派发</td></tr>
+          <tr><td class="feat">检测型扩展反制</td><td><span class="x">✕</span>被上报、被跳转、被遮罩</td><td><span class="v">✓</span>CSense 反制：不出网 / 不跳转 / 不遮罩</td></tr>
         </tbody>
       </table>
     </div>
@@ -366,6 +382,10 @@ xhr.<span class="f">send</span>(<span class="n">JSON</span>.<span class="f">stri
       <h2>常见问题</h2>
     </div>
     <div class="faq rv">
+      <details>
+        <summary>作品作者装了「CSense 拦截器」会把我怎么样？</summary>
+        <div class="ans">CSense 拦截器是作品作者安装的检测扩展：扫描 DOM / vm / 存储指纹，命中就往第三方数据库上报，还可能跳转到 csdetected 页并注入遮罩挡住作品。VaIMod 内置 csense-guard：上报本地合成假 200 不出网、跳转三层拦截（含 location.href 直赋值）、遮罩一插入 DOM 立即移除——你以为它还在工作，它什么都拿不到。开 <code>vaimod_debug=1</code> 可查拦截计数。</div>
+      </details>
       <details>
         <summary>VaIMod 会被站点检测到吗？</summary>
         <div class="ans">检测的三个常用面——DOM、函数包装、网络流量——分别被闭式 Shadow DOM、markNative 白名单、单次出网编码覆盖。残余边界是 Tampermonkey 的注入时机（document-start 已是物理极限），若站点在脚本注入前就完成了全部初始化，那不是任何 userscript 能解决的。</div>
